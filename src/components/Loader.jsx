@@ -1,10 +1,12 @@
+import { SLoader } from "./Loader.styled";
+
 function Loader() {
   return (
-    <div className="loader">   
-    <div className="loader__text">      
+    <SLoader>   
+    <div>      
         "Данные загружаются"      
     </div>
-    </div>
+    </SLoader>
   );
 }
 

@@ -1,13 +1,14 @@
 import Card from "./Card.jsx";
+import { SColumn } from "./Column.styled.js";
 import { cardList } from "./data.js";
 
 function Column({status}) {
   return (
-    <div className="main__column column">
-      <div className="column__title">
+    <SColumn>
+      <div>
         <p>{status}</p>
       </div>
-      <div className="cards">
+      <div>
         {cardList
         .filter((card) => card.status === status)
         .map(card => (
@@ -19,7 +20,7 @@ function Column({status}) {
           />
         ))}        
       </div>
-    </div>
+    </SColumn>
   );
 }
 

@@ -77,3 +77,5 @@ export const cardList = [
     status: "Готово",
   },
 ];
+
+export const statuses = [...new Set(cardList.map(card => card.status))]

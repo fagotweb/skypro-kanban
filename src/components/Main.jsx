@@ -1,21 +1,21 @@
 import Column from "./Column.jsx";
+import { statuses } from "./data.js";
+import { Container } from "./Header.styled.js";
+import { MainBlock, MainContent, SMain } from "./Main.styled.js";
 
-function Main() {
-  
+function Main() {  
   return (
-      <main className="main">
-        <div className="container">
-          <div className="main__block">
-            <div className="main__content">
-              <Column status = "Без статуса" />
-              <Column status = "Нужно сделать"/>
-              <Column status = "В работе"/>
-              <Column status = "Тестирование"/>
-              <Column status = "Готово"/>
-            </div>
-          </div>
-        </div>
-      </main>
+      <SMain>
+        <Container>
+          <MainBlock>
+            <MainContent>
+              {statuses.map((status) => (
+              <Column key={status} status={status} />
+            ))}
+            </MainContent>
+          </MainBlock>
+        </Container>
+      </SMain>
   );
 }
 
