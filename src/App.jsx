@@ -5,19 +5,74 @@ import PopBrowse from "./components/PopBrowse.jsx";
 import Loader from "./components/Loader.jsx";
 import { useEffect, useState } from "react";
 import { SWrapper } from "./components/Main.styled.js";
-import { ExitBlock, ExitContainer, ExitTtl, SPopExit, ExitForm } from "./components/PopExit.js";
+import {
+  ExitBlock,
+  ExitContainer,
+  ExitTtl,
+  SPopExit,
+  ExitForm,
+} from "./components/PopExit.js";
+import { createGlobalStyle } from "styled-components";
+
+const GlobalStyles = createGlobalStyle`
+  * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    *:before,
+    *:after {
+      box-sizing: border-box;
+    }
+
+    a,
+    a:visited {
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    button,
+    ._btn {
+      cursor: pointer;
+      outline: none;
+    }
+
+    ul li {
+      list-style: none;
+    }
+
+    @keyframes card-animation {
+      0% {
+        height: 0;
+        opacity: 0;
+      }
+      100% {
+        height: auto;
+        opacity: 1;
+      }
+    }
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      font-family: "Roboto", Arial, Helvetica, sans-serif;
+      color: #000000;
+    }
+`;
 
 function App() {
   const [Loading, setLoading] = useState(true);
 
   useEffect(() => {
-      setTimeout(() => {
-         setLoading(false);
-      }, 3000);
-   }, []);
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+  }, []);
 
   return (
     <SWrapper>
+      <GlobalStyles />
       <SPopExit id="popExit">
         <ExitContainer>
           <ExitBlock>
@@ -37,10 +92,10 @@ function App() {
           </ExitBlock>
         </ExitContainer>
       </SPopExit>
-      
+
       <PopBrowse />
       <Header />
-      {Loading ? (<Loader />) : (<Main />)}
+      {Loading ? <Loader /> : <Main />}
     </SWrapper>
   );
 }

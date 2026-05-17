@@ -18,7 +18,7 @@ export const SCards = styled.div`
   justify-content: stretch;
   padding: 15px 13px 19px;
 
-  @media screen and (max-width: 1200px) {  
+  @media screen and (max-width: 1200px) {
     width: 220px;
     height: 130px;
     background-color: #ffffff;
@@ -27,7 +27,7 @@ export const SCards = styled.div`
     flex-direction: column;
     align-items: flex-start;
     justify-content: stretch;
-    padding: 15px 13px 19px;
+    padding: 15px 13px 19px;    
   }
 `;
 
