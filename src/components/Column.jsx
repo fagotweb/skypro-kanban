@@ -13,7 +13,8 @@ function Column({status}) {
         .filter((card) => card.status === status)
         .map(card => (
           <Card          
-            key={card.id}            
+            key={card.id}
+            id={card.id}           
             topic={card.topic}
             title={card.title}
             date={card.date}

@@ -1,24 +1,33 @@
 import Calendar from "./Calendar.jsx";
+import { Link, useParams } from 'react-router-dom';
+import { cardList } from "./data.js";
+import { useMemo } from "react";
 
-function PopBrowse() {
+const PopBrowse = () => {
+  const {id} = useParams();
+  const card = useMemo (
+    () => cardList.find((c) => c.id === id) || { topic: "", title: "" , date: "" , status: "" },
+    [id]
+  );
+
   return (
       <div className="pop-browse" id="popBrowse">
         <div className="pop-browse__container">
           <div className="pop-browse__block">
             <div className="pop-browse__content">
               <div className="pop-browse__top-block">
-                <h3 className="pop-browse__ttl">Название задачи</h3>
+                <h3 className="pop-browse__ttl">{card.title}</h3>
                 <div className="categories__theme theme-top _orange _active-category">
-                  <p className="_orange">Web Design</p>
+                  <p className="_orange">{card.topic}</p>
                 </div>
               </div>
               <div className="pop-browse__status status">
                 <p className="status__p subttl">Статус</p>
                 <div className="status__themes">
-                  <div className="status__theme _hide">
-                    <p>Без статуса</p>
-                  </div>
                   <div className="status__theme _gray">
+                    <p className="_gray">{card.status}</p>
+                  </div>
+                  {/* <div className="status__theme _gray">
                     <p className="_gray">Нужно сделать</p>
                   </div>
                   <div className="status__theme _hide">
@@ -29,7 +38,7 @@ function PopBrowse() {
                   </div>
                   <div className="status__theme _hide">
                     <p>Готово</p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="pop-browse__wrap">
@@ -69,7 +78,7 @@ function PopBrowse() {
                   </button>
                 </div>
                 <button className="btn-browse__close _btn-bg _hover01">
-                  <a href="#">Закрыть</a>
+                  <Link to="/">Закрыть</Link>
                 </button>
               </div>
               <div className="pop-browse__btn-edit _hide">
@@ -88,7 +97,7 @@ function PopBrowse() {
                   </button>
                 </div>
                 <button className="btn-edit__close _btn-bg _hover01">
-                  <a href="#">Закрыть</a>
+                  <Link to="/">Закрыть</Link>
                 </button>
               </div>
             </div>
