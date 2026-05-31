@@ -29,14 +29,17 @@ function AppRoutes() {
       <Routes>
         <Route element={<PrivateRoute isAuth={isAuth} />}>
           <Route path="/" element={<MainPage loading={loading} />}>
-            <Route path="exit" element={<PopExitPage setIsAuth={setIsAuth} />} />
+            <Route
+              path="exit"
+              element={<PopExitPage setIsAuth={setIsAuth} />}
+            />
             <Route path="card/:id" element={<PopBrowsePage />} />
             <Route path="card/add" element={<PopNewCardPage />} />
           </Route>
         </Route>
         <Route path="/sign-in" element={<SignInPage setIsAuth={setIsAuth} />} />
         <Route path="/sign-up" element={<SignUpPage />} />
-        <Route path="\*" element={<NotFoundPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       //{" "}
     </SWrapper>

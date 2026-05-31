@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   SignInBlock,
   SignInCont,
@@ -9,14 +10,41 @@ import {
   SSignIn,
 } from "./SignIn.styled";
 import { Link, useNavigate } from "react-router-dom";
+import { signIn } from "../services/auth";
 
 function SignIn({ isSignUp, setIsAuth }) {
   const navigate = useNavigate();
-  const handleLogin = (e) => {
-    e.preventDefault();
-    setIsAuth(true);
-    navigate("/");
+
+  const [formData, setFormData] = useState({ login: "", password: "" });
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    if (!formData.login.trim() || !formData.password.trim()) {
+      setError("Пожалуйста, заполните все поля");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await signIn(formData);
+      if (setIsAuth) setIsAuth(true);
+      navigate("/");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <SSignIn>
       <SignInCont>
@@ -25,26 +53,47 @@ function SignIn({ isSignUp, setIsAuth }) {
             <div className="modal__ttl">
               <h2>Вход</h2>
             </div>
-            <SignInLogin id="formLogIn" action="#">
+            <SignInLogin id="formLogIn" action="#" onSubmit={handleLogin}>
               <SignInInput
                 type="text"
                 name="login"
                 id="formlogin"
                 placeholder="Эл. почта"
+                value={formData.login}
+                onChange={handleChange}
               />
               <SignInInput
                 type="password"
                 name="password"
                 id="formpassword"
                 placeholder="Пароль"
+                value={formData.password}
+                onChange={handleChange}
               />
+              {error && (
+                <div
+                  style={{
+                    color: "#c92a2a",
+                    fontSize: "14px",
+                    marginTop: "10px",
+                    textAlign: "center",
+                  }}
+                >
+                  {error}
+                </div>
+              )}
               <SignInEnter
                 id="btnEnter"
-                onClick={handleLogin}
-                type="secondary"
-                //  $fullWidth={true}
+                type="submit"
+                disabled={isLoading}
                 className="button-enter"
-                text={isSignUp ? "Зарегистрироваться" : "Войти"}
+                text={
+                  isLoading
+                    ? "Загрузка..."
+                    : isSignUp
+                      ? "Зарегистрироваться"
+                      : "Войти"
+                }
               />
               <SignInGroup>
                 <p>Нужно зарегистрироваться?</p>
