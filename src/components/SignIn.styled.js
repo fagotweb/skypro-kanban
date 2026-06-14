@@ -78,9 +78,7 @@ export const SignInInput = styled.input`
   }
 `;
 
-export const SignInEnter = styled.button.attrs(props => ({
-  children: props.text,
-  }))`
+export const SignInEnter = styled.button`
   width: 100%;
   height: 30px;
   background-color: #565eef;

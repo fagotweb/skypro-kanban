@@ -2,6 +2,15 @@ import { CardBtn, CardContent, CardGroup, SCard, SCards } from "./Card.styled";
 import { Link } from "react-router-dom";
 
 function Card({ id, topic, title, date }) {
+
+  const formattedDate = date
+    ? new Date(date).toLocaleDateString("ru-RU", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+      })
+    : "Нет даты";
+
   return (
     <SCard key={id}>
       <SCards>
@@ -18,9 +27,9 @@ function Card({ id, topic, title, date }) {
           </Link>
         </CardGroup>
         <CardContent>
-          <a href="" target="_blank">
+          <Link to={`card/${id}`}>
             <h3>{title}</h3>
-          </a>
+          </Link>
           <div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -50,7 +59,7 @@ function Card({ id, topic, title, date }) {
                 </clipPath>
               </defs>
             </svg>
-            <p>{date}</p>
+            <p>{formattedDate}</p>
           </div>
         </CardContent>
       </SCards>

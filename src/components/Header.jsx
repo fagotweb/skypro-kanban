@@ -1,10 +1,18 @@
 import { useState } from "react";
 import PopUser from "./PopUser.jsx";
-import { SHeader, HeaderBlock, LogoImg, HeaderUser, Container } from "./Header.styled.js";
-import { Link } from 'react-router-dom';
+import {
+  SHeader,
+  HeaderBlock,
+  LogoImg,
+  HeaderUser,
+  Container,
+} from "./Header.styled.js";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx";
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = useAuth();
 
   return (
     <SHeader>
@@ -25,10 +33,10 @@ function Header() {
               <Link to="card/add">Создать новую задачу</Link>
             </button>
             <HeaderUser
-              href="#userSetTtarget"              
+              href="#userSetTtarget"
               onClick={() => setIsOpen(!isOpen)}
             >
-              Ivan Ivanov
+              {user.name}
             </HeaderUser>
             {isOpen && <PopUser />}
           </nav>

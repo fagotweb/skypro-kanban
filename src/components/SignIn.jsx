@@ -10,10 +10,11 @@ import {
   SSignIn,
 } from "./SignIn.styled";
 import { Link, useNavigate } from "react-router-dom";
-import { signIn } from "../services/auth";
+import { useAuth } from "../context/AuthContext";
 
-function SignIn({ isSignUp, setIsAuth }) {
+function SignIn({ isSignUp }) {
   const navigate = useNavigate();
+  const { loginUser } = useAuth();
 
   const [formData, setFormData] = useState({ login: "", password: "" });
   const [error, setError] = useState(null);
@@ -35,8 +36,7 @@ function SignIn({ isSignUp, setIsAuth }) {
 
     try {
       setIsLoading(true);
-      await signIn(formData);
-      if (setIsAuth) setIsAuth(true);
+      await loginUser(formData);      
       navigate("/");
     } catch (err) {
       setError(err.message);
@@ -87,14 +87,13 @@ function SignIn({ isSignUp, setIsAuth }) {
                 type="submit"
                 disabled={isLoading}
                 className="button-enter"
-                text={
-                  isLoading
-                    ? "Загрузка..."
-                    : isSignUp
-                      ? "Зарегистрироваться"
-                      : "Войти"
-                }
-              />
+              >
+                {isLoading
+                  ? "Загрузка..."
+                  : isSignUp
+                    ? "Зарегистрироваться"
+                    : "Войти"}
+              </SignInEnter>
               <SignInGroup>
                 <p>Нужно зарегистрироваться?</p>
                 <Link to="/sign-up">Регистрируйтесь здесь</Link>

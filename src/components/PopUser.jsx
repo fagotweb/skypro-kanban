@@ -1,14 +1,13 @@
+import { useAuth } from "../context/AuthContext";
 import { PopUserSet } from "./PopUser.styled";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 function PopUser() {
+  const { user } = useAuth();
   return (
-    <PopUserSet      
-      id="userSetTtarget"
-    >
-      <a href="">x</a>
-      <p>Ivan Ivanov</p>
-      <p>ivan.ivanov@gmail.com</p>
+    <PopUserSet id="userSetTtarget">
+      <p>{user?.name || "Гость"}</p>
+      <p>{user?.email || user?.login || "Войдите в профиль"}</p>
       <div>
         <p>Темная тема</p>
         <input type="checkbox" className="checkbox" name="checkbox"></input>

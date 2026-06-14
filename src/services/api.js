@@ -49,7 +49,7 @@ export async function postWord({ token, word }) {
 
 export async function editWord({ token, id, word }) {
   try {
-    const data = await axios.put(API_URL + id, word, {
+    const data = await axios.put(`${API_URL}/${id}`, word, {
       headers: {
         Authorization: "Bearer " + token,
         "Content-Type": "text/html",
@@ -80,7 +80,7 @@ export async function getWord({ token, id }) {
 
 export async function deleteWord({ token, id }) {
   try {
-    const data = await axios.delete(API_URL + id, {
+    const data = await axios.delete(`${API_URL}/${id}`, {
       headers: {
         Authorization: "Bearer " + token,
       },

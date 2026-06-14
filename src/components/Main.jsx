@@ -2,15 +2,23 @@ import Column from "./Column.jsx";
 import { Container } from "./Header.styled.js";
 import { MainBlock, MainContent, SMain } from "./Main.styled.js";
 import Header from "./Header.jsx";
-import { useMemo } from "react";
+import { useTasks } from "../context/TaskContext.jsx";
+import Loader from "./Loader.jsx";
 
-function Main({ error, tasks = [], getWords }) {
-  const dynamicStatuses = useMemo(() => {
-    if (!Array.isArray(tasks)) return [];
+function Main({ error }) {
+  const { tasks, tasksLoading, getWordsList } = useTasks();
 
-    const allStatuses = tasks.map((task) => task.status).filter(Boolean);
-    return [...new Set(allStatuses)];
-  }, [tasks]);
+  const statuses = [
+    "Без статуса",
+    "Нужно сделать",
+    "В работе",
+    "Тестирование",
+    "Готово",
+  ];
+
+  if (tasksLoading) {
+    return <Loader />;
+  }
 
   return (
     <>
@@ -47,13 +55,13 @@ function Main({ error, tasks = [], getWords }) {
                   </button>
                 </div>
               )}
-              {!error && dynamicStatuses.length === 0 && (
+              {!error && statuses.length === 0 && (
                 <p style={{ textAlign: "center", width: "100%" }}>
                   Список задач пуст
                 </p>
               )}
               {!error &&
-                dynamicStatuses.map((status) => {
+                statuses.map((status) => {
                   const filteredCards = tasks.filter(
                     (task) => task.status === status,
                   );
@@ -62,7 +70,7 @@ function Main({ error, tasks = [], getWords }) {
                       key={status}
                       status={status}
                       cards={filteredCards}
-                      getWords={getWords}
+                      getWords={getWordsList}
                     />
                   );
                 })}
