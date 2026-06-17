@@ -38,6 +38,7 @@ export function TaskProvider({ children }) {
         tasks,
         tasksLoading,
         getWordsList,
+        setTasks,
       }}
     >
       {children}

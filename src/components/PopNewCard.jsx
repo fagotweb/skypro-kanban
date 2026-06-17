@@ -8,11 +8,13 @@ import { useAuth } from "../context/AuthContext.jsx";
 function PopNewCard() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { getWordsList } = useTasks();
+  const { setTasks } = useTasks();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [topic, setTopic] = useState("Web Design");
+
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,11 +30,11 @@ function PopNewCard() {
         topic: topic,
         status: "Без статуса",
         description: description.trim(),
-        date: new Date().toISOString(),
+        date: selectedDate.toISOString(),
       };
 
-      await postWord({ token: user?.token, word: newTask });
-      await getWordsList();
+      const savedTask = await postWord({ token: user?.token, word: newTask });
+      setTasks(savedTask);
 
       navigate("/");
     } catch (err) {
@@ -84,7 +86,10 @@ function PopNewCard() {
                   ></textarea>
                 </div>
               </form>
-              <Calendar />
+              <Calendar
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+              />
             </div>
             <div className="pop-new-card__categories categories">
               <p className="categories__p subttl">Категория</p>

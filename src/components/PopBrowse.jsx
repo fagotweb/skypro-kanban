@@ -1,3 +1,4 @@
+import * as S from "./PopBrowse.styles.js";
 import Calendar from "./Calendar.jsx";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
@@ -10,7 +11,7 @@ const PopBrowse = () => {
   const navigate = useNavigate();
 
   const { user } = useAuth();
-  const { tasks, getWordsList } = useTasks();
+  const { tasks, setTasks } = useTasks();
 
   const [isEditMode, setIsEditMode] = useState(false);
 
@@ -29,12 +30,14 @@ const PopBrowse = () => {
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("Без статуса");
   const [topic, setTopic] = useState("Web Design");
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   useEffect(() => {
     if (card) {
       setDescription(card.description || "");
       setStatus(card.status || "Без статуса");
       setTopic(card.topic || "Web Design");
+      setSelectedDate(card.date ? new Date(card.date) : new Date());
     }
   }, [card]);
 
@@ -46,11 +49,18 @@ const PopBrowse = () => {
         topic: topic,
         status: status,
         description: description,
-        date: card.date,
+        date: selectedDate.toISOString(),
       };
 
-      await editWord({ token: user?.token, id, word: updatedCard });
-      await getWordsList(); 
+      const updatedTasksList = await editWord({
+        token: user?.token,
+        id,
+        word: updatedCard,
+      });
+
+      setTasks(updatedTasksList);
+
+      setIsEditMode(false);
       navigate("/");
     } catch (err) {
       alert("Не удалось сохранить изменения: " + err.message);
@@ -62,9 +72,11 @@ const PopBrowse = () => {
     if (!window.confirm("Вы уверены, что хотите удалить эту задачу?")) return;
 
     try {
-      await deleteWord({ token: user?.token, id });
-      await getWordsList(); 
-      navigate("/"); 
+      const updatedTasksList = await deleteWord({ token: user?.token, id });
+
+      setTasks(updatedTasksList);
+
+      navigate("/");
     } catch (err) {
       alert("Не удалось удалить задачу: " + err.message);
     }
@@ -80,44 +92,44 @@ const PopBrowse = () => {
   const categoryOptions = ["Web Design", "Research", "Copywriting"];
 
   return (
-    <div className="pop-browse" id="popBrowse">
-      <div className="pop-browse__container">
-        <div className="pop-browse__block">
-          <div className="pop-browse__content">
-            <div className="pop-browse__top-block">
-              <h3 className="pop-browse__ttl">{card.title}</h3>
-              <div className="categories__theme theme-top _orange _active-category">
-                <p className="_orange">{topic}</p>
-              </div>
-            </div>
-            <div className="pop-browse__status status">
+    <S.PopBrowseWrapper>
+      <S.PopBrowseContainer>
+        <S.PopBrowseBlock>
+          <S.PopBrowseContent>
+            <S.TopBlock>
+              <S.Title>{card.title}</S.Title>
+              <S.CategoryThemeItem
+                className="theme-top"
+                $active={true}
+                $topic={topic}
+              >
+                <p>{topic}</p>
+              </S.CategoryThemeItem>
+            </S.TopBlock>
+
+            <S.StatusBlock>
               <p className="status__p subttl">Статус</p>
-              <div className="status__themes">
+              <S.StatusThemes>
                 {isEditMode ? (
                   statusOptions.map((opt) => (
-                    <div
+                    <S.StatusThemeItem
                       key={opt}
                       onClick={() => setStatus(opt)}
-                      className={`status__theme _gray ${status === opt ? "_active-status" : ""}`}
-                      style={{
-                        cursor: "pointer",
-                        border: status === opt ? "1px solid #565EEF" : "none",
-                      }}
+                      $isActive={status === opt}
                     >
-                      <p className="_gray">{opt}</p>
-                    </div>
+                      <p>{opt}</p>
+                    </S.StatusThemeItem>
                   ))
                 ) : (
-                  <div className="status__theme _gray">
-                    <p className="_gray">{status}</p>
-                  </div>
+                  <S.StatusThemeItem style={{ cursor: "default" }}>
+                    <p>{status}</p>
+                  </S.StatusThemeItem>
                 )}
-              </div>
-            </div>
+              </S.StatusThemes>
+            </S.StatusBlock>
 
-            <div className="pop-browse__wrap">
-              <form
-                className="pop-browse__form form-browse"
+            <S.BrowseWrap>
+              <S.FormBrowse
                 id="formBrowseCard"
                 onSubmit={(e) => e.preventDefault()}
               >
@@ -125,104 +137,103 @@ const PopBrowse = () => {
                   <label htmlFor="textArea01" className="subttl">
                     Описание задачи
                   </label>
-                  <textarea
-                    className="form-browse__area"
-                    name="text"
+                  <S.TextArea
                     id="textArea01"
                     placeholder="Введите описание задачи..."
-                    readOnly={!isEditMode} 
+                    readOnly={!isEditMode}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                  ></textarea>
+                  />
                 </div>
-              </form>
-              <Calendar />
-            </div>
-            <div className="theme-down__categories theme-down">
+              </S.FormBrowse>
+              <Calendar
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+                readOnly={!isEditMode}
+              />
+            </S.BrowseWrap>
+
+            {/* Категория для мобильной верстки */}
+            <S.CategoriesBlock className="theme-down">
               <p className="categories__p subttl">Категория</p>
-              <div className="categories__themes">
+              <S.CategoriesThemes>
                 {isEditMode ? (
                   categoryOptions.map((opt) => (
-                    <div
+                    <S.CategoryThemeItem
                       key={opt}
                       onClick={() => setTopic(opt)}
-                      className={`categories__theme _orange ${topic === opt ? "_active-category" : ""}`}
+                      $active={topic === opt}
+                      $topic={opt}
                       style={{ cursor: "pointer" }}
                     >
-                      <p className="_orange">{opt}</p>
-                    </div>
+                      <p>{opt}</p>
+                    </S.CategoryThemeItem>
                   ))
                 ) : (
-                  <div className="categories__theme _orange _active-category">
-                    <p className="_orange">{topic}</p>
-                  </div>
+                  <S.CategoryThemeItem $active={true} $topic={topic}>
+                    <p>{topic}</p>
+                  </S.CategoryThemeItem>
                 )}
-              </div>
-            </div>
-            {!isEditMode && (
-              <div className="pop-browse__btn-browse">
+              </S.CategoriesThemes>
+            </S.CategoriesBlock>
+
+            {/* Группы кнопок */}
+            {!isEditMode ? (
+              <S.ButtonGroupContainer>
                 <div className="btn-group">
-                  <button
+                  <S.ButtonStyled
                     type="button"
+                    $variant="bor"
                     onClick={() => setIsEditMode(true)}
-                    className="btn-browse__edit _btn-bor _hover03"
                   >
                     Редактировать задачу
-                  </button>
-                  <button
+                  </S.ButtonStyled>
+                  <S.ButtonStyled
                     type="button"
+                    $variant="bor"
                     onClick={handleDelete}
-                    className="btn-browse__delete _btn-bor _hover03"
                   >
                     Удалить задачу
-                  </button>
+                  </S.ButtonStyled>
                 </div>
-                <button
-                  type="button"
-                  className="btn-browse__close _btn-bg _hover01"
-                >
+                <S.ButtonStyled type="button" $variant="bg">
                   <Link to="/">Закрыть</Link>
-                </button>
-              </div>
-            )}
-            {isEditMode && (
-              <div className="pop-browse__btn-edit">
+                </S.ButtonStyled>
+              </S.ButtonGroupContainer>
+            ) : (
+              <S.ButtonGroupContainer>
                 <div className="btn-group">
-                  <button
+                  <S.ButtonStyled
                     type="button"
+                    $variant="bg"
                     onClick={handleSave}
-                    className="btn-edit__edit _btn-bg _hover01"
                   >
                     Сохранить
-                  </button>
-                  <button
+                  </S.ButtonStyled>
+                  <S.ButtonStyled
                     type="button"
+                    $variant="bor"
                     onClick={() => setIsEditMode(false)}
-                    className="btn-edit__edit _btn-bor _hover03"
                   >
                     Отменить
-                  </button>
-                  <button
+                  </S.ButtonStyled>
+                  <S.ButtonStyled
                     type="button"
+                    $variant="bor"
                     onClick={handleDelete}
-                    className="btn-edit__delete _btn-bor _hover03"
-                    id="btnDelete"
                   >
                     Удалить задачу
-                  </button>
+                  </S.ButtonStyled>
                 </div>
-                <button
-                  type="button"
-                  className="btn-edit__close _btn-bg _hover01"
-                >
+                <S.ButtonStyled type="button" $variant="bg">
                   <Link to="/">Закрыть</Link>
-                </button>
-              </div>
+                </S.ButtonStyled>
+              </S.ButtonGroupContainer>
             )}
-          </div>
-        </div>
-      </div>
-    </div>
+          </S.PopBrowseContent>
+        </S.PopBrowseBlock>
+      </S.PopBrowseContainer>
+    </S.PopBrowseWrapper>
   );
 };
 
