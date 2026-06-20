@@ -2,16 +2,18 @@ import axios from "axios";
 
 function handleError(error) {
   if (error.response) {
-    if (error.response.status === 401) {
-      throw new Error("Нет авторизованы.");
-    }
-    if (error.response.status === 404) {
-      throw new Error("Ресурс не найден.");
-    }
-    throw new Error(`Ошибка сервера`);
-  } else {
-    throw new Error("Произошла непредвиденная ошибка");
-  }
+    const status = error.response.status;
+    const serverMessage = error.response.data?.message;
+    
+    if (status === 401) {
+      return Promise.reject(new Error("Вы не авторизованы. Войдите в аккаунт заново."));
+    }        
+    if (status >= 500) {
+      return Promise.reject(new Error("Сервер временно недоступен. Попробуйте позже."));
+    }        
+    return Promise.reject(new Error(serverMessage || "Произошла ошибка при обработке запроса."));
+  }   
+  return Promise.reject(new Error("Не удалось связаться с сервером. Проверьте подключение."));
 }
 
 const API_URL = "https://wedev-api.sky.pro/api/kanban";
@@ -27,7 +29,7 @@ export async function fetchWords({ token }) {
       return data.data.tasks;
     }
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 }
 
@@ -43,7 +45,7 @@ export async function postWord({ token, word }) {
       return data.data.tasks;
     }
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 }
 
@@ -59,7 +61,7 @@ export async function editWord({ token, id, word }) {
       return data.data.tasks;
     }
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 }
 
@@ -74,7 +76,7 @@ export async function getWord({ token, id }) {
       return data.data.tasks;
     }
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 }
 
@@ -89,6 +91,6 @@ export async function deleteWord({ token, id }) {
       return data.data.tasks;
     }
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 }

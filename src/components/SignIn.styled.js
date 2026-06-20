@@ -6,7 +6,6 @@ export const SSignIn = styled.div`
   overflow-x: hidden;
   overflow-y: scroll;
   background-color: #eaeef6;
-
 `;
 
 export const SignInCont = styled.div`
@@ -25,14 +24,18 @@ export const SignInModal = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+`;
 
-  >div {
-    text-align: center;
+export const ModalTitle = styled.div`
+  text-align: center;
+
+  h2 {
     font-size: 20px;
     font-weight: 700;
     line-height: 30px;
     letter-spacing: -0.6px;
-    margin-bottom: 20px;
+    color: #000000;
+    margin: 0;
   }
 `;
 
@@ -54,18 +57,15 @@ export const SignInLogin = styled.form`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
-  input:first-child {
-    margin-bottom: 7px;
-  }
+  gap: 20px;
 `;
 
 export const SignInInput = styled.input`
   width: 100%;
   min-width: 100%;
   border-radius: 8px;
-  border: 0.7px solid rgba(148, 166, 190, 0.4);
-  outline: none;
+  border: 0.7px solid
+    ${(props) => (props.$hasError ? "#c92a2a" : "rgba(148, 166, 190, 0.4)")};
   padding: 10px 8px;
 
   &::placeholder {
@@ -83,8 +83,6 @@ export const SignInEnter = styled.button`
   height: 30px;
   background-color: #565eef;
   border-radius: 4px;
-  margin-top: 20px;
-  margin-bottom: 20px;
   border: none;
   outline: none;
   display: flex;
@@ -95,37 +93,50 @@ export const SignInEnter = styled.button`
   font-weight: 500;
   letter-spacing: -0.14px;
   color: #ffffff;
-
-  /* a {
-    width: 100%;
-    height: 100%;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  } */
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    opacity 0.2s;
 
   &:hover {
     background-color: #33399b;
   }
 
-  
-		
-	
+  &:disabled {
+    background-color: #94a6be;
+    cursor: not-allowed;
+    opacity: 1;
+  }
 `;
 
 export const SignInGroup = styled.div`
   text-align: center;
 
-		& p,
-		a {
-			color: rgba(148, 166, 190, 0.40);
-			font-size: 14px;
-			font-weight: 400;
-			line-height: 150%;
-			letter-spacing: -0.14px;
-		}
-		& a {
-			text-decoration: underline;
-		}
+  & p,
+  a {
+    color: rgba(148, 166, 190, 0.4);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 150%;
+    letter-spacing: -0.14px;
+  }
+  & a {
+    text-decoration: underline;
+  }
+`;
+
+export const FormError = styled.div`
+  color: #c92a2a;
+  font-family: "Roboto", sans-serif;
+  font-size: 11.5px;
+  line-height: 140%;
+  text-align: center;
+  width: 100%;
+`;
+
+export const InputGroup = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
 `;

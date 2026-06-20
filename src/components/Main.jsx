@@ -1,12 +1,12 @@
 import Column from "./Column.jsx";
 import { Container } from "./Header.styled.js";
-import { MainBlock, MainContent, SMain } from "./Main.styled.js";
+import { EmptyMessage, ErrorBlock, ErrorButton, MainBlock, MainContent, SMain } from "./Main.styled.js";
 import Header from "./Header.jsx";
 import { useTasks } from "../context/TaskContext.jsx";
 import Loader from "./Loader.jsx";
 
-function Main({ error }) {
-  const { tasks, tasksLoading, getWordsList } = useTasks();
+function Main() {
+  const { tasks, tasksLoading, error, getWordsList } = useTasks();
 
   const statuses = [
     "Без статуса",
@@ -15,66 +15,39 @@ function Main({ error }) {
     "Тестирование",
     "Готово",
   ];
-
-  if (tasksLoading) {
-    return <Loader />;
-  }
-
+  
   return (
     <>
       <Header />
       <SMain>
         <Container>
           <MainBlock>
+            {tasksLoading ? (
+              <Loader />
+            ) : (
             <MainContent>
-              {error && (
-                <div
-                  style={{
-                    width: "100%",
-                    padding: "20px",
-                    backgroundColor: "#ffebee",
-                    color: "#c92a2a",
-                    borderRadius: "8px",
-                    border: "1px solid #ffc9c9",
-                    textAlign: "center",
-                    marginBottom: "20px",
-                    gridColumn: "1 / -1",
-                  }}
-                >
-                  <h3>Загрузка не удалась</h3>
-                  <p>{error}</p>
-                  <button
-                    onClick={getWords}
-                    style={{
-                      marginTop: "10px",
-                      padding: "8px 16px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Попробовать снова
-                  </button>
-                </div>
+              {error && ( 
+                <ErrorBlock> 
+                  <h3>Загрузка не удалась</h3> 
+                  <p>{error}</p> 
+                  <ErrorButton onClick={getWordsList}> 
+                    Попробовать снова 
+                  </ErrorButton> 
+                </ErrorBlock> 
               )}
-              {!error && statuses.length === 0 && (
-                <p style={{ textAlign: "center", width: "100%" }}>
-                  Список задач пуст
-                </p>
-              )}
-              {!error &&
-                statuses.map((status) => {
-                  const filteredCards = tasks.filter(
-                    (task) => task.status === status,
-                  );
-                  return (
-                    <Column
-                      key={status}
-                      status={status}
-                      cards={filteredCards}
-                      getWords={getWordsList}
-                    />
-                  );
-                })}
+              {!error && statuses.map((status) => { 
+                const filteredCards = tasks.filter( 
+                  (task) => task.status === status, 
+                ); 
+                return ( 
+                  <Column key={status} status={status} cards={filteredCards} getWords={getWordsList} /> 
+                ); 
+              })}
+              {!error && tasks.length === 0 && ( 
+                <EmptyMessage>Список задач пуст</EmptyMessage> 
+              )} 
             </MainContent>
+            )}
           </MainBlock>
         </Container>
       </SMain>

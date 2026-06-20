@@ -13,6 +13,7 @@ const TaskContext = createContext();
 export function TaskProvider({ children }) {
   const [tasks, setTasks] = useState([]);
   const [tasksLoading, setTasksLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const { user } = useAuth();
   const token = user?.token;
@@ -21,11 +22,20 @@ export function TaskProvider({ children }) {
     if (!token) return;
 
     setTasksLoading(true);
+    setError(null);
 
-    const data = await fetchWords({ token });
-    if (data) setTasks(data);
-
-    setTasksLoading(false);
+    try {
+      const data = await fetchWords({ token });      
+      if (data) {
+        setTasks(data);
+      } else {        
+        throw new Error("Не удалось загрузить данные с сервера");
+      }
+    } catch (err) {
+      setError(err.message || "Произошла непредвиденная ошибка");
+    } finally {
+      setTasksLoading(false);
+    }
   }, [token]);
 
   useEffect(() => {
@@ -37,6 +47,8 @@ export function TaskProvider({ children }) {
       value={{
         tasks,
         tasksLoading,
+         error,
+        setError,
         getWordsList,
         setTasks,
       }}
@@ -50,4 +62,3 @@ export function useTasks() {
   return useContext(TaskContext);
 }
 
-export default TaskContext;

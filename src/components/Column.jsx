@@ -1,6 +1,5 @@
 import Card from "./Card.jsx";
 import { SColumn } from "./Column.styled.js";
-// import { cardList } from "./data.js";
 
 function Column({ status, cards = [] }) {
   return (
